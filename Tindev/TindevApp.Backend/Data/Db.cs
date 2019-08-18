@@ -1,6 +1,6 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using TindevApp.Backend.Infrastructure;
 
 namespace TindevApp.Backend.Data
 {
@@ -17,12 +16,12 @@ namespace TindevApp.Backend.Data
         private readonly string _connectionString;
         private readonly ILogger<Db> _logger;
 
-        public Db(ILogger<Db> logger, IOptions<DbConnectionOptions> dbConnectionOptions)
+        public Db(ILogger<Db> logger, IConfiguration config)
         {
-            if (dbConnectionOptions?.Value == null)
-                throw new ArgumentNullException(nameof(dbConnectionOptions));
+            if (string.IsNullOrWhiteSpace(config.GetConnectionString("Default")))
+                throw new ArgumentNullException(nameof(config));
 
-            _connectionString = dbConnectionOptions.Value.ConnectionString;
+            _connectionString = config.GetConnectionString("Default");
             _logger = logger;
         }
 

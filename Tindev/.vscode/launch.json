@@ -34,6 +34,37 @@
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/TindevApp.Backend/Views"
             }
+        },
+        {
+            "name": ".NET Core Launch (Watch Web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/TindevApp.Backend/bin/Debug/netcoreapp2.2/TindevApp.Backend.dll",
+            "args": ["watch"],
+            "cwd": "${workspaceFolder}/TindevApp.Backend/",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart",
+            "launchBrowser": {
+                "enabled": true,
+                "args": "${auto-detect-url}",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/TindevApp.Backend/Views"
+            }
         }
     ]
 }

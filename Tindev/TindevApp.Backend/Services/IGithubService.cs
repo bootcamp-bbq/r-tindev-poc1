@@ -11,5 +11,7 @@ namespace TindevApp.Backend.Services
     public interface IGithubService
     {
         Task<Developer> GetDeveloper(string username, CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Developer>> GetFollowers(string username, CancellationToken cancellationToken = default);
     }
 }

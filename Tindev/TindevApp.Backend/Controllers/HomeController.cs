@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TindevApp.Backend.Commands;
 using TindevApp.Backend.Services;
 
 namespace TindevApp.Backend.Controllers
@@ -13,14 +15,13 @@ namespace TindevApp.Backend.Controllers
     {
         public IActionResult Index()
         {
-            return Ok("You're here");
+            return Ok("Hello");
         }
 
-        public async Task<IActionResult> Login(string username, [FromServices] IGithubService githubService, CancellationToken cancellationToken = default)
+        [HttpPost]
+        public Task<IActionResult> Login([FromBody] CreateUserCmdRequest request, [FromServices] IMediator mediatorService, CancellationToken cancellationToken = default)
         {
-            var result = await githubService.GetDeveloper(username, cancellationToken);
-
-            return Ok(result);
+            return this.Mediator(request, mediatorService, cancellationToken);
         }
     }
 }
