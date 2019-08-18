@@ -37,7 +37,9 @@ namespace TindevApp.Backend
                 cfg.ApiUri = Configuration["GithubApi"];
             });
 
-            services.AddHttpClient<GithubService>();
+            services.AddHttpClient<HttpGithubService>();
+
+            services.AddSingleton<IGithubService, HttpGithubService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

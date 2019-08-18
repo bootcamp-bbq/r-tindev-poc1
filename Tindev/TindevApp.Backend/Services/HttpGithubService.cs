@@ -11,15 +11,15 @@ using TindevApp.Backend.Models;
 
 namespace TindevApp.Backend.Services
 {
-    public class GithubService
+    public class HttpGithubService : IGithubService
     {
         private readonly HttpClient _client;
 
-        private readonly ILogger<GithubService> _logger;
+        private readonly ILogger<HttpGithubService> _logger;
 
         private readonly GithubServiceOptions _githubServiceOptions;
 
-        public GithubService(HttpClient client, ILogger<GithubService> logger, IOptions<GithubServiceOptions> githubServiceOptions)
+        public HttpGithubService(HttpClient client, ILogger<HttpGithubService> logger, IOptions<GithubServiceOptions> githubServiceOptions)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
