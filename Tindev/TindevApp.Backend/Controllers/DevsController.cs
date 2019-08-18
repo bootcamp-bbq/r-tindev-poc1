@@ -1,17 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TindevApp.Backend.Data.Repository.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TindevApp.Backend.Controllers
 {
     public class DevsController : ControllerBase
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index([FromServices] IDevelopersRepository repo)
         {
-            return Ok();
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            var devs = await repo.RetrieveAll(tokenSource.Token);
+            return Ok(devs);
         }
 
 

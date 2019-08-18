@@ -9,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TindevApp.Backend.Infrastructure;
 using TindevApp.Backend.Services;
+using TindevApp.Backend.Data;
+using TindevApp.Backend.Data.Repository.Abstract;
+using TindevApp.Backend.Data.Repository.Impl;
 
 namespace TindevApp.Backend
 {
@@ -37,9 +40,16 @@ namespace TindevApp.Backend
                 cfg.ApiUri = Configuration["GithubApi"];
             });
 
+            services.Configure<DbConnectionOptions>(cfg =>
+            {
+                cfg.ConnectionString = Configuration["ConnectionString"];
+            });
+
             services.AddHttpClient<HttpGithubService>();
 
             services.AddSingleton<IGithubService, HttpGithubService>();
+            services.AddSingleton<IDevelopersRepository, DevelopersRepository>();
+            services.AddSingleton<Db, Db>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

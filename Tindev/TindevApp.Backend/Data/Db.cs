@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using System;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TindevApp.Backend.Infrastructure;
 
 namespace TindevApp.Backend.Data
 {
@@ -15,23 +17,23 @@ namespace TindevApp.Backend.Data
         private readonly string _connectionString;
         private readonly ILogger<Db> _logger;
 
-        public Db(string connectionString, ILogger<Db> logger)
+        public Db(ILogger<Db> logger, IOptions<DbConnectionOptions> dbConnectionOptions)
         {
-            _connectionString = connectionString;
+            if (dbConnectionOptions?.Value == null)
+                throw new ArgumentNullException(nameof(dbConnectionOptions));
+
+            _connectionString = dbConnectionOptions.Value.ConnectionString;
             _logger = logger;
         }
 
-        internal async Task<int> ExecuteCmd(string sql, CancellationToken cancellationToken = default)
+        internal async Task<int> ExecuteAsync(string sql, Object param, CancellationToken cancellationToken = default)
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 try
                 {
                     await connection.OpenAsync();
-
-                    var affectedLines = await connection.ExecuteAsync(sql);
-
-                    return affectedLines;
+                    return await connection.ExecuteAsync(sql, param);
                 }
                 catch (Exception ex)
                 {
@@ -46,7 +48,7 @@ namespace TindevApp.Backend.Data
             }
         }
 
-        internal async Task<IEnumerable<T>> ExecuteCmd<T>(string sql, CancellationToken cancellationToken = default)
+        internal async Task<IEnumerable<T>> QueryAsync<T>(string sql, Object param, CancellationToken cancellationToken = default)
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
@@ -54,9 +56,7 @@ namespace TindevApp.Backend.Data
                 {
                     await connection.OpenAsync();
 
-                    var result = await connection.QueryAsync<T>(sql);
-
-                    return result;
+                    return await connection.QueryAsync<T>(sql, param);
                 }
                 catch (Exception ex)
                 {
