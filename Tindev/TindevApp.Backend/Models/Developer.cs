@@ -12,11 +12,11 @@ namespace TindevApp.Backend.Models
 
         public string Name { get; set; }
 
-        public string Username { get; set; }
+        public string Usuario { get; set; }
 
         public string Bio { get; set; }
 
-        public string AvatarUri { get; set; }
+        public string Avatar { get; set; }
 
         public string GithubUri { get; set; }
 

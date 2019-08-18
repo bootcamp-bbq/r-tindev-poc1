@@ -16,27 +16,27 @@ export default function Main({ match }) {
 
   useEffect(() => {
     async function loadUsers() {
-      const response = await api.get('/devs', {
+      const response = await api.get(`/devs/list?username=${match.params.id}`, {
         headers: {
           user: match.params.id,
         }
       })
 
-      setUsers(response.data);
+      setUsers(response.data.items);
     }
 
     loadUsers();
   }, [match.params.id]);
 
-  useEffect(() => {
-    const socket = io('http://localhost:3333', {
-      query: { user: match.params.id }
-    });
+  //useEffect(() => {
+  //   const socket = io('http://localhost:3333', {
+  //     query: { user: match.params.id }
+  //   });
 
-    socket.on('match', dev => {
-      setMatchDev(dev);
-    })
-  }, [match.params.id]);
+  //   socket.on('match', dev => {
+  //     setMatchDev(dev);
+  //   })
+  // }, [match.params.id]);
 
   async function handleLike(id) {
     await api.post(`/devs/${id}/likes`, null, {

@@ -45,12 +45,12 @@ namespace TindevApp.Backend.Services
 
                     return new Developer
                     {
-                        AvatarUri = (string)o["avatar_url"],
+                        Avatar = (string)o["avatar_url"],
                         Bio = (string)o["bio"],
                         CreatedAt = DateTime.MinValue,
                         GithubUri = (string)o["html_url"],
                         Name = (string)o["name"],
-                        Username = (string)o["login"],
+                        Usuario = (string)o["login"],
                         Id = (int)o["id"]
                     };
                 }
@@ -85,12 +85,12 @@ namespace TindevApp.Backend.Services
                     return array.Select(o =>
                         new Developer
                         {
-                            AvatarUri = (string)o["avatar_url"],
+                            Avatar = (string)o["avatar_url"],
                             Bio = (string)o["bio"],
                             CreatedAt = DateTime.MinValue,
                             GithubUri = (string)o["html_url"],
                             Name = (string)o["name"],
-                            Username = (string)o["login"],
+                            Usuario = (string)o["name"],
                             Id = (int)o["id"]
                         })
                         .ToList();

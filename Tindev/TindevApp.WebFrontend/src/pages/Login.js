@@ -11,13 +11,13 @@ export default function Login({ history }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const response = await api.post('/devs', {
+    const response = await api.post('/home/login', {
       username,
     });
 
-    const { _id } = response.data;
+    const { developer } = response.data;
 
-    history.push(`/dev/${_id}`);
+    history.push(`/dev/${developer.username}`);
   }
 
   return (
