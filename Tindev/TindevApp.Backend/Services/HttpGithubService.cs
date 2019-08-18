@@ -1,12 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using TindevApp.Backend.Infrastructure;
 using TindevApp.Backend.Models;
 
 namespace TindevApp.Backend.Services
@@ -17,17 +15,10 @@ namespace TindevApp.Backend.Services
 
         private readonly ILogger<HttpGithubService> _logger;
 
-        private readonly GithubServiceOptions _githubServiceOptions;
-
-        public HttpGithubService(HttpClient client, ILogger<HttpGithubService> logger, IOptions<GithubServiceOptions> githubServiceOptions)
+        public HttpGithubService(HttpClient client, ILogger<HttpGithubService> logger)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            if (githubServiceOptions?.Value == null)
-                throw new ArgumentNullException(nameof(githubServiceOptions));
-
-            _client.BaseAddress = new Uri(_githubServiceOptions.ApiUri);
         }
 
         public async Task<Developer> GetDeveloper(string username, CancellationToken cancellationToken = default)

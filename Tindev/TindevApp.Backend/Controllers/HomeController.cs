@@ -11,12 +11,12 @@ namespace TindevApp.Backend.Controllers
 {
     public class HomeController : ControllerBase
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return Ok("You're here");
+            return Ok("Hello");
         }
 
-        public async Task<IActionResult> Login(string username, [FromServices] IGithubService githubService, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Login([FromRoute]string username, [FromServices] IGithubService githubService, CancellationToken cancellationToken = default)
         {
             var result = await githubService.GetDeveloper(username, cancellationToken);
 

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TindevApp.Backend.Infrastructure;
+using System;
 using TindevApp.Backend.Services;
 
 namespace TindevApp.Backend
@@ -32,14 +27,13 @@ namespace TindevApp.Backend
 
             services.AddOptions();
 
-            services.Configure<GithubServiceOptions>(cfg =>
+            services.AddHttpClient<HttpGithubService>(c =>
             {
-                cfg.ApiUri = Configuration["GithubApi"];
+                c.BaseAddress = new Uri(Configuration["GithubApi:Uri"]);
+                c.DefaultRequestHeaders.Add("User-Agent", Configuration["GithubApi:UserAgent"]);
             });
 
-            services.AddHttpClient<HttpGithubService>();
-
-            services.AddSingleton<IGithubService, HttpGithubService>();
+            services.AddScoped<IGithubService>(ctx => ctx.GetService<HttpGithubService>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
