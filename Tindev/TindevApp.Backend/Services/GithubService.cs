@@ -1,13 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TindevApp.Backend.Infrastructure;
 using TindevApp.Backend.Models;
 
 namespace TindevApp.Backend.Services
@@ -18,10 +17,17 @@ namespace TindevApp.Backend.Services
 
         private readonly ILogger<GithubService> _logger;
 
-        public GithubService(HttpClient client, ILogger<GithubService> logger)
+        private readonly GithubServiceOptions _githubServiceOptions;
+
+        public GithubService(HttpClient client, ILogger<GithubService> logger, IOptions<GithubServiceOptions> githubServiceOptions)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            if (githubServiceOptions?.Value == null)
+                throw new ArgumentNullException(nameof(githubServiceOptions));
+
+            _client.BaseAddress = new Uri(_githubServiceOptions.ApiUri);
         }
 
         public async Task<Developer> GetDeveloper(string username, CancellationToken cancellationToken = default)
@@ -33,17 +39,33 @@ namespace TindevApp.Backend.Services
             {
                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var result = await _client.SendAsync(request, cancellationToken);
+                try
+                {
+                    var result = await _client.SendAsync(request, cancellationToken);
 
-                if (!result.IsSuccessStatusCode)
-                    throw new Exception("Error when trying to locate user");
+                    if (!result.IsSuccessStatusCode)
+                        throw new Exception("Error when trying to locate user");
 
-                var contentResult = await result.Content.ReadAsStringAsync();
+                    var contentResult = await result.Content.ReadAsStringAsync();
 
-                JObject o = JObject.Parse(contentResult);
+                    JObject o = JObject.Parse(contentResult);
 
-
-                throw new NotImplementedException();
+                    return new Developer
+                    {
+                        AvatarUri = (string)o["avatar_url"],
+                        Bio = (string)o["bio"],
+                        CreatedAt = DateTime.MinValue,
+                        GithubUri = (string)o["html_url"],
+                        Name = (string)o["name"],
+                        Username = (string)o["login"],
+                        Id = (int)o["id"]
+                    };
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error when getting user {username} from GitHub from URI {URI}", username, _client.BaseAddress.ToString());
+                    throw;
+                }
             }
         }
     }
