@@ -11,7 +11,7 @@ using TindevApp.Backend.Services;
 
 namespace TindevApp.Backend.RequestHandlers
 {
-    public class CreateUserRequestHandler : IRequestHandler<CreateUserRequest, CreateUserResponse>
+    public class CreateUserRequestHandler : IRequestHandler<CreateUserCmdRequest, CreateUserCmdResponse>
     {
         private readonly IGithubService _githubService;
 
@@ -23,7 +23,7 @@ namespace TindevApp.Backend.RequestHandlers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<CreateUserResponse> Handle(CreateUserRequest request, CancellationToken cancellationToken)
+        public async Task<CreateUserCmdResponse> Handle(CreateUserCmdRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("executing create user request handler");
 
@@ -32,7 +32,7 @@ namespace TindevApp.Backend.RequestHandlers
 
             var githubResult = await _githubService.GetDeveloper(request.Username, cancellationToken);
 
-            return new CreateUserResponse
+            return new CreateUserCmdResponse
             {
                 Developer = githubResult
             };

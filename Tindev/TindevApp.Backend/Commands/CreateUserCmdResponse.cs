@@ -1,14 +1,14 @@
-﻿using MediatR;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TindevApp.Backend.Models;
 
 namespace TindevApp.Backend.Commands
 {
-    public class CreateUserRequest : IRequest<CreateUserResponse>
+    public class CreateUserCmdResponse
     {
-        public string Username { get; set; }
+        public Developer Developer { get; set; }
     }
 }
