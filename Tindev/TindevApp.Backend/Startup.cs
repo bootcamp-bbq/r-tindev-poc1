@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Reflection;
 using TindevApp.Backend.Services;
 
 namespace TindevApp.Backend
@@ -34,6 +36,8 @@ namespace TindevApp.Backend
             });
 
             services.AddScoped<IGithubService>(ctx => ctx.GetService<HttpGithubService>());
+
+            services.AddMediatR(Assembly.GetExecutingAssembly());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
