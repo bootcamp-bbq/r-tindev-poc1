@@ -7,6 +7,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TindevApp.Backend", "Tindev
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "TindevApp.WebFrontend", "TindevApp.WebFrontend\TindevApp.WebFrontend.njsproj", "{0909C990-01F7-4F0A-A076-9C8A568BE3DD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{54388014-F532-4C70-97EF-03D315570754}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{0C41ADFF-B7A8-4C39-81F8-680098182D24}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Docker\.env = Solution Items\Docker\.env
+		Solution Items\Docker\mongodb.compose.yml = Solution Items\Docker\mongodb.compose.yml
+		Solution Items\Docker\postgresql.compose.yml = Solution Items\Docker\postgresql.compose.yml
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{054931A4-97F3-4E18-8321-F0C2430D3B3A}"
+	ProjectSection(SolutionItems) = preProject
+		tables.sql = tables.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{003BD6D2-5B77-4291-AB69-DAB7C2594F82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +41,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{97140811-36A4-4A42-9AC6-FDCAD1645F0E} = {003BD6D2-5B77-4291-AB69-DAB7C2594F82}
+		{0C41ADFF-B7A8-4C39-81F8-680098182D24} = {54388014-F532-4C70-97EF-03D315570754}
+		{054931A4-97F3-4E18-8321-F0C2430D3B3A} = {54388014-F532-4C70-97EF-03D315570754}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B805B57-1328-4BF8-9664-40E49D4913CB}

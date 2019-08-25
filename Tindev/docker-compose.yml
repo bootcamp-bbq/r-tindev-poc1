@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  tindevapp.backend:
+    image: ${DOCKER_REGISTRY-}tindevappbackend
+    build:
+      context: .
+      dockerfile: TindevApp.Backend/Dockerfile

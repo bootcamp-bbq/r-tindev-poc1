@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TindevApp.Backend.Queries;
+using TindevApp.Backend.Repositories;
 using TindevApp.Backend.Services;
 
 namespace TindevApp.Backend.RequestHandlers
@@ -15,12 +16,12 @@ namespace TindevApp.Backend.RequestHandlers
     {
         private readonly ILogger<ListDevelopersRequestHandler> _logger;
 
-        private readonly IGithubService _githubService;
+        private readonly IDeveloperRepository _developerRepository;
 
-        public ListDevelopersRequestHandler(ILogger<ListDevelopersRequestHandler> logger, IGithubService githubService)
+        public ListDevelopersRequestHandler(ILogger<ListDevelopersRequestHandler> logger, IDeveloperRepository developerRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _githubService = githubService ?? throw new ArgumentNullException(nameof(githubService));
+            _developerRepository = developerRepository ?? throw new ArgumentNullException(nameof(developerRepository));
         }
 
         public async Task<ListDevelopersQueryResponse> Handle(ListDevelopersQueryRequest request, CancellationToken cancellationToken)
@@ -28,7 +29,7 @@ namespace TindevApp.Backend.RequestHandlers
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
-            var developerFollowers = await _githubService.GetFollowers(request.Username, cancellationToken);
+            var developerFollowers = await _developerRepository.ListAll(cancellationToken);
 
             return new ListDevelopersQueryResponse
             {

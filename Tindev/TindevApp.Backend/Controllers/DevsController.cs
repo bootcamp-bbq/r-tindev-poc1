@@ -1,13 +1,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TindevApp.Backend.Queries;
-using TindevApp.Backend.Data.Repository.Abstract;
+using TindevApp.Backend.Repositories;
 
 namespace TindevApp.Backend.Controllers
 {
@@ -20,10 +17,10 @@ namespace TindevApp.Backend.Controllers
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<IActionResult> Index([FromServices] IDevelopersRepository repo)
+        public async Task<IActionResult> Index([FromServices] IDeveloperRepository repo)
         {
             CancellationTokenSource tokenSource = new CancellationTokenSource();
-            var devs = await repo.RetrieveAll(tokenSource.Token);
+            var devs = await repo.ListAll(tokenSource.Token);
             return Ok(devs);
         }
 

@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.IdGenerators;
 using System;
 using System.Reflection;
+using TindevApp.Backend.Models;
+using TindevApp.Backend.Repositories;
+using TindevApp.Backend.Repositories.Mongo;
 using TindevApp.Backend.Services;
-using TindevApp.Backend.Data;
-using TindevApp.Backend.Data.Repository.Abstract;
-using TindevApp.Backend.Data.Repository.Impl;
 
 namespace TindevApp.Backend
 {
@@ -43,10 +45,22 @@ namespace TindevApp.Backend
             services.AddHttpClient<HttpGithubService>();
 
             services.AddScoped<IGithubService>(ctx => ctx.GetService<HttpGithubService>());
-            services.AddSingleton<IDevelopersRepository, DevelopersRepository>();
-            services.AddSingleton<Db>();
+
+            services.AddTransient<IDeveloperRepository, MgDeveloperRepository>();
+
+            services.Configure<MongoDbOptions>(opts =>
+            {
+                opts.ConnectionString = Configuration.GetConnectionString("Mongo");
+                opts.Database = Configuration["MongoDb:Database"];
+            });
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
+
+            BsonClassMap.RegisterClassMap<Developer>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdProperty(x => x.Id).SetIdGenerator(StringObjectIdGenerator.Instance);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
