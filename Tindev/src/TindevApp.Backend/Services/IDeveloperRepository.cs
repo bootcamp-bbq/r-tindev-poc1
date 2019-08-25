@@ -18,6 +18,8 @@ namespace TindevApp.Backend.Services
 
         Task<IReadOnlyList<Developer>> ListAllExcept(string username, CancellationToken cancellationToken = default);
 
+        Task<IReadOnlyList<Developer>> ListAllExceptInLikeAndDeslike(string username, CancellationToken cancellationToken = default);
+
         Task<Developer> GetById(string id, CancellationToken cancellationToken = default);
 
         Task<Developer> GetByUsername(string username, CancellationToken cancellationToken = default);
