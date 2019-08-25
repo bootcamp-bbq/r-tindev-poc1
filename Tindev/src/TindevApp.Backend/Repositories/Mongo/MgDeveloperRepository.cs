@@ -98,6 +98,18 @@ namespace TindevApp.Backend.Repositories.Mongo
             return await collection.Find(x => x.Username != username).ToListAsync(cancellationToken);
         }
 
+        public async Task<IReadOnlyList<Developer>> ListAllExceptInLikeAndDeslike(string username, CancellationToken cancellationToken = default)
+        {
+            var collection = GetDatabase(_mongoDbOptions).GetDeveloperCollection();
+
+            var filter = Builders<Developer>.Filter.And(
+                Builders<Developer>.Filter.Ne(x => x.Username, username),
+                Builders<Developer>.Filter.AnyNin(x => x.Likes, new string[] { username }),
+                Builders<Developer>.Filter.AnyNin(x => x.Deslikes, new string[] { username }));
+
+            return await collection.Find(filter).ToListAsync(cancellationToken);
+        }
+
         public async Task<Developer> Update(Developer developer, CancellationToken cancellationToken = default)
         {
             var collection = GetDatabase(_mongoDbOptions).GetDeveloperCollection();
