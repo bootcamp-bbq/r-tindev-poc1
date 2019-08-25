@@ -11,7 +11,7 @@ namespace TindevApp.Backend
     {
         internal static string UserId(this ClaimsPrincipal principal)
         {
-            return GetClaim(principal, ClaimTypes.Name);
+            return GetClaim(principal, ClaimTypes.NameIdentifier);
         }
 
         internal static string UserName(this ClaimsPrincipal principal)

@@ -24,7 +24,43 @@ namespace TindevApp.Backend.Domains
             _githubService = githubService ?? throw new ArgumentNullException(nameof(githubService));
         }
 
-        public async Task<Developer> GetDeveloper(string username, CancellationToken cancellationToken = default)
+        internal async Task<bool> AddLike(string currentUsername, string targetUsername, CancellationToken cancellationToken = default)
+        {
+            _logger.LogInformation("Adding like to {TargetUserId} from {CurrentUserId}", targetUsername, currentUsername);
+
+            var targetUserDb = await _developerRepository.GetByUsername(targetUsername, cancellationToken);
+
+            if (cancellationToken.IsCancellationRequested)
+                return false;
+
+            if (targetUserDb.Likes == null)
+                targetUserDb.Likes = new List<string>();
+            targetUserDb.Likes.Add(currentUsername);
+
+            _ = await _developerRepository.Update(targetUserDb, cancellationToken);
+
+            var currentUserDb = await _developerRepository.GetByUsername(currentUsername, cancellationToken);
+
+            return currentUserDb.Likes != null && currentUserDb.Likes.Contains(targetUsername);
+        }
+
+        internal async Task AddDeslike(string currentUserId, string targetUserId, CancellationToken cancellationToken = default)
+        {
+            _logger.LogInformation("Adding deslike to {TargetUserId} from {CurrentUserId}", targetUserId, currentUserId);
+
+            var targetUserDb = await _developerRepository.GetById(targetUserId, cancellationToken);
+
+            if (cancellationToken.IsCancellationRequested)
+                return;
+
+            if (targetUserDb.Deslikes == null)
+                targetUserDb.Deslikes = new List<string>();
+            targetUserDb.Deslikes.Add(currentUserId);
+
+            _ = await _developerRepository.Update(targetUserDb, cancellationToken);
+        }
+
+        internal async Task<Developer> GetDeveloper(string username, CancellationToken cancellationToken = default)
         {
             var gitDeveloper = await _githubService.GetDeveloper(username, cancellationToken);
             if (gitDeveloper == null)
@@ -35,7 +71,7 @@ namespace TindevApp.Backend.Domains
             return dbDeveloper;
         }
 
-        public async Task<IEnumerable<Developer>> GetDeveloperFrieds(string username, CancellationToken cancellationToken = default)
+        internal async Task<IEnumerable<Developer>> GetDeveloperFrieds(string username, CancellationToken cancellationToken = default)
         {
             var gitFriedsColl = await _githubService.GetFollowers(username, cancellationToken);
             if (gitFriedsColl == null)
