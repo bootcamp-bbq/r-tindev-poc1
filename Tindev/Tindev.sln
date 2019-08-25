@@ -3,9 +3,34 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29209.62
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TindevApp.Backend", "TindevApp.Backend\TindevApp.Backend.csproj", "{97140811-36A4-4A42-9AC6-FDCAD1645F0E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{54388014-F532-4C70-97EF-03D315570754}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
 EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "TindevApp.WebFrontend", "TindevApp.WebFrontend\TindevApp.WebFrontend.njsproj", "{0909C990-01F7-4F0A-A076-9C8A568BE3DD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{0C41ADFF-B7A8-4C39-81F8-680098182D24}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{054931A4-97F3-4E18-8321-F0C2430D3B3A}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\SQL\postgresql-tables.sql = Solution Items\SQL\postgresql-tables.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{003BD6D2-5B77-4291-AB69-DAB7C2594F82}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mongodb", "mongodb", "{CBAFBF36-E4DB-43F6-8DAD-8EDAB5028192}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Docker\mongodb\mongodb.compose.yml = Solution Items\Docker\mongodb\mongodb.compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "postgresql", "postgresql", "{41766B0F-30A0-40F4-AA87-A27E81215A3E}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Docker\postgresql\.env = Solution Items\Docker\postgresql\.env
+		Solution Items\Docker\postgresql\postgresql.compose.yml = Solution Items\Docker\postgresql\postgresql.compose.yml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TindevApp.Backend", "src\TindevApp.Backend\TindevApp.Backend.csproj", "{8CEB8570-9BEA-43BF-8DB7-1106E8593CF4}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "TindevApp.WebFrontend", "src\TindevApp.WebFrontend\TindevApp.WebFrontend.njsproj", "{0909C990-01F7-4F0A-A076-9C8A568BE3DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,10 +38,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{97140811-36A4-4A42-9AC6-FDCAD1645F0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{97140811-36A4-4A42-9AC6-FDCAD1645F0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{97140811-36A4-4A42-9AC6-FDCAD1645F0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{97140811-36A4-4A42-9AC6-FDCAD1645F0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CEB8570-9BEA-43BF-8DB7-1106E8593CF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CEB8570-9BEA-43BF-8DB7-1106E8593CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CEB8570-9BEA-43BF-8DB7-1106E8593CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CEB8570-9BEA-43BF-8DB7-1106E8593CF4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0909C990-01F7-4F0A-A076-9C8A568BE3DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0909C990-01F7-4F0A-A076-9C8A568BE3DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0909C990-01F7-4F0A-A076-9C8A568BE3DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -24,6 +49,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0C41ADFF-B7A8-4C39-81F8-680098182D24} = {54388014-F532-4C70-97EF-03D315570754}
+		{054931A4-97F3-4E18-8321-F0C2430D3B3A} = {54388014-F532-4C70-97EF-03D315570754}
+		{CBAFBF36-E4DB-43F6-8DAD-8EDAB5028192} = {0C41ADFF-B7A8-4C39-81F8-680098182D24}
+		{41766B0F-30A0-40F4-AA87-A27E81215A3E} = {0C41ADFF-B7A8-4C39-81F8-680098182D24}
+		{8CEB8570-9BEA-43BF-8DB7-1106E8593CF4} = {003BD6D2-5B77-4291-AB69-DAB7C2594F82}
+		{0909C990-01F7-4F0A-A076-9C8A568BE3DD} = {003BD6D2-5B77-4291-AB69-DAB7C2594F82}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B805B57-1328-4BF8-9664-40E49D4913CB}
