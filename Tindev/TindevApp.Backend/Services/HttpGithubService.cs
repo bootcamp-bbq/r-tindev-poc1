@@ -50,7 +50,7 @@ namespace TindevApp.Backend.Services
                         CreatedAt = DateTime.MinValue,
                         GithubUri = (string)o["html_url"],
                         Name = (string)o["name"],
-                        Usuario = (string)o["login"],
+                        Username = (string)o["login"],
                     };
                 }
                 catch (Exception ex)
@@ -89,7 +89,7 @@ namespace TindevApp.Backend.Services
                             CreatedAt = DateTime.MinValue,
                             GithubUri = (string)o["html_url"],
                             Name = (string)o["login"],
-                            Usuario = (string)o["login"],
+                            Username = (string)o["login"],
                         })
                         .ToList();
                 }

@@ -1,12 +1,16 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
 using System;
 using System.Reflection;
+using System.Text;
+using TindevApp.Backend.Domains;
 using TindevApp.Backend.Models;
 using TindevApp.Backend.Repositories;
 using TindevApp.Backend.Repositories.Mongo;
@@ -42,9 +46,12 @@ namespace TindevApp.Backend
                 c.DefaultRequestHeaders.Add("User-Agent", Configuration["GithubApi:UserAgent"]);
             });
 
+            services.AddScoped<DeveloperDomain>();
+
             services.AddHttpClient<HttpGithubService>();
 
             services.AddScoped<IGithubService>(ctx => ctx.GetService<HttpGithubService>());
+            services.AddTransient<IUserService, UserService>();
 
             services.AddTransient<IDeveloperRepository, MgDeveloperRepository>();
 
@@ -60,6 +67,32 @@ namespace TindevApp.Backend
             {
                 cm.AutoMap();
                 cm.MapIdProperty(x => x.Id).SetIdGenerator(StringObjectIdGenerator.Instance);
+            });
+
+
+            services.Configure<JwtUserOptions>(opts =>
+            {
+                opts.Secret = Configuration["AppSettings:Secret"];
+            });
+
+            var byteSecret = Encoding.ASCII.GetBytes(Configuration["AppSettings:Secret"]);
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(byteSecret),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
             });
         }
 
@@ -77,6 +110,8 @@ namespace TindevApp.Backend
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseAuthentication();
 
             app.UseMvcWithDefaultRoute();
         }

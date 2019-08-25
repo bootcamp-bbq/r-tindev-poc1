@@ -16,6 +16,8 @@ namespace TindevApp.Backend.Repositories
 
         Task<Developer> GetById(string id, CancellationToken cancellationToken = default);
 
+        Task<Developer> GetByUsername(string username, CancellationToken cancellationToken = default);
+
         Task<Developer> Update(Developer developer, CancellationToken cancellationToken = default);
     }
 }

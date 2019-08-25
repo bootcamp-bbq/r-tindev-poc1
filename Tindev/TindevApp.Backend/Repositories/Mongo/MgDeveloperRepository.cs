@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,9 @@ namespace TindevApp.Backend.Repositories.Mongo
         private readonly MongoDbOptions _mongoDbOptions;
         private readonly ILogger<MgDeveloperRepository> _logger;
 
-        public MgDeveloperRepository(MongoDbOptions mongoDbOptions, ILogger<MgDeveloperRepository> logger)
+        public MgDeveloperRepository(IOptions<MongoDbOptions> mongoDbOptions, ILogger<MgDeveloperRepository> logger)
         {
-            _mongoDbOptions = mongoDbOptions ?? throw new ArgumentNullException(nameof(mongoDbOptions));
+            _mongoDbOptions = mongoDbOptions?.Value ?? throw new ArgumentNullException(nameof(mongoDbOptions));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -42,6 +43,13 @@ namespace TindevApp.Backend.Repositories.Mongo
             var collection = GetDatabase(_mongoDbOptions).GetDeveloperCollection();
 
             return collection.Find<Developer>(x => x.Id == id).SingleOrDefaultAsync(cancellationToken);
+        }
+
+        public Task<Developer> GetByUsername(string username, CancellationToken cancellationToken = default)
+        {
+            var collection = GetDatabase(_mongoDbOptions).GetDeveloperCollection();
+
+            return collection.Find<Developer>(x => x.Username == username).SingleOrDefaultAsync(cancellationToken);
         }
 
         public async Task<IReadOnlyList<Developer>> ListAll(CancellationToken cancellationToken = default)
