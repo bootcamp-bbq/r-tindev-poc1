@@ -11,6 +11,7 @@ using System;
 using System.Reflection;
 using System.Text;
 using TindevApp.Backend.Domains;
+using TindevApp.Backend.Infrastructure.Mvc;
 using TindevApp.Backend.Models;
 using TindevApp.Backend.Repositories.Mongo;
 using TindevApp.Backend.Services;
@@ -37,7 +38,8 @@ namespace TindevApp.Backend
         {
             services.AddCors();
 
-            services.AddMvc();
+            services.AddTransient<RequestPopulatorActionFilter>();
+            services.AddMvc(config => config.Filters.AddService<RequestPopulatorActionFilter>());
 
             services.AddOptions();
 
@@ -50,10 +52,8 @@ namespace TindevApp.Backend
             services.AddScoped<DeveloperDomain>();
 
             services.AddHttpClient<HttpGithubService>();
-
             services.AddScoped<IGithubService>(ctx => ctx.GetService<HttpGithubService>());
             services.AddTransient<IUserService, UserService>();
-
             services.AddTransient<IDeveloperRepository, MgDeveloperRepository>();
 
             services.Configure<MongoDbOptions>(opts =>

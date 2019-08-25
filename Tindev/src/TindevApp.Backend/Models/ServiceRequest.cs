@@ -9,7 +9,7 @@ namespace TindevApp.Backend.Models
 {
     public class ServiceRequest : IServiceRequest
     {
-        public ClaimsPrincipal Principal { get; set; }
+        public ClaimsPrincipal User { get; set; }
 
         public string CallerIpAddress { get; set; }
 

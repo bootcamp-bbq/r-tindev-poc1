@@ -48,7 +48,7 @@ namespace TindevApp.Backend.Services.Authentication
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, username.ToLowerInvariant()),
+                    new Claim(ClaimTypes.Name, username),
                     new Claim(ClaimTypes.NameIdentifier, developer.Id)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
@@ -61,7 +61,7 @@ namespace TindevApp.Backend.Services.Authentication
             {
                 Id = developer.Id,
                 Token = textToken,
-                Username = username.ToLowerInvariant()
+                Username = username
             };
             return user;
         }

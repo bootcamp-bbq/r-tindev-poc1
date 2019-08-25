@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
+using TindevApp.Backend.Commands;
 using TindevApp.Backend.Queries;
 
 namespace TindevApp.Backend.Controllers
@@ -18,8 +19,7 @@ namespace TindevApp.Backend.Controllers
             return await this.Mediator(rq, cancellationToken);
         }
 
-        [HttpGet]
-        [Route("{username}/friends")]
+        [HttpGet("{username}/friends")]
         public async Task<IActionResult> Friends([FromRoute] string username, CancellationToken cancellationToken = default)
         {
             var rq = this.RequestFrom<ListDeveloperFriendsQueryRequest>();
@@ -29,23 +29,24 @@ namespace TindevApp.Backend.Controllers
             return await this.Mediator(rq, cancellationToken);
         }
 
-        [HttpGet]
-        [Route("friends")]
+        [HttpGet("friends")]
         public async Task<IActionResult> Friends(CancellationToken cancellationToken = default)
         {
             var rq = this.RequestFrom<ListDeveloperFriendsQueryRequest>();
 
-            rq.TargetUsername = rq.Principal.UserName();
+            rq.TargetUsername = rq.User.UserName();
 
             return await this.Mediator(rq, cancellationToken);
         }
 
-        [HttpPost]
-        public IActionResult Like()
+        [HttpPost("{username}/like/add")]
+        public async Task<IActionResult> Like([FromBody] AddLikeCmdRequest request, [FromRoute]string username, CancellationToken cancellationToken = default)
         {
-            return Ok();
+            request.TargetUsername = username;
+            return await this.Mediator(request, cancellationToken);
         }
 
+        [HttpPost("{username}/deslike/add")]
         public IActionResult Deslike()
         {
             return Ok();

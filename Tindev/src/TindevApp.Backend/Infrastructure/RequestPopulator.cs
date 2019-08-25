@@ -12,7 +12,7 @@ namespace TindevApp.Backend.Infrastructure
     {
         public static void PopulateRequest(IServiceRequest serviceRequest, HttpContext httpContext)
         {
-            serviceRequest.Principal = httpContext.User;
+            serviceRequest.User = httpContext.User;
         }
     }
 }
