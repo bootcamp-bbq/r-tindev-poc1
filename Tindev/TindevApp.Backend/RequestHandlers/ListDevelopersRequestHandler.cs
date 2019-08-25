@@ -29,7 +29,7 @@ namespace TindevApp.Backend.RequestHandlers
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
-            var developerFollowers = await _developerRepository.ListAll(cancellationToken);
+            var developerFollowers = await _developerRepository.ListAllExcept(request.Principal.UserName(), cancellationToken);
 
             return new ListDevelopersQueryResponse
             {

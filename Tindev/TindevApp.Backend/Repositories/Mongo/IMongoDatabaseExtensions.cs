@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,11 @@ namespace TindevApp.Backend.Repositories.Mongo
         internal static IMongoCollection<Developer> GetDeveloperCollection(this IMongoDatabase mongoDatabase)
         {
             return mongoDatabase.GetCollection<Developer>("developer");
+        }
+
+        internal static IMongoCollection<BsonDocument> GetDeveloperBsonCollection(this IMongoDatabase mongoDatabase)
+        {
+            return mongoDatabase.GetCollection<BsonDocument>("developer");
         }
     }
 }

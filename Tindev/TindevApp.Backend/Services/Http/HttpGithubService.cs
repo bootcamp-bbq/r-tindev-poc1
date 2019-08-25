@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TindevApp.Backend.Models;
 
-namespace TindevApp.Backend.Services
+namespace TindevApp.Backend.Services.Http
 {
     public class HttpGithubService : IGithubService
     {
@@ -47,7 +47,6 @@ namespace TindevApp.Backend.Services
                     {
                         Avatar = (string)o["avatar_url"],
                         Bio = (string)o["bio"],
-                        CreatedAt = DateTime.MinValue,
                         GithubUri = (string)o["html_url"],
                         Name = (string)o["name"],
                         Username = (string)o["login"],
@@ -86,7 +85,6 @@ namespace TindevApp.Backend.Services
                         {
                             Avatar = (string)o["avatar_url"],
                             Bio = (string)o["bio"],
-                            CreatedAt = DateTime.MinValue,
                             GithubUri = (string)o["html_url"],
                             Name = (string)o["login"],
                             Username = (string)o["login"],

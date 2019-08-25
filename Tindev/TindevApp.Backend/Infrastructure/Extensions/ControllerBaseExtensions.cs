@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
+using TindevApp.Backend.Models;
 
 namespace TindevApp.Backend.Controllers
 {

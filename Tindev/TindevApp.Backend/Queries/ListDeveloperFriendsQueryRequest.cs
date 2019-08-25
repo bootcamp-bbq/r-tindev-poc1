@@ -8,7 +8,8 @@ using TindevApp.Backend.Models;
 
 namespace TindevApp.Backend.Queries
 {
-    public class ListDevelopersQueryRequest : ServiceRequest, IRequest<ListDevelopersQueryResponse>
+    public class ListDeveloperFriendsQueryRequest : ServiceRequest, IRequest<ListDeveloperFriendsQueryResponse>
     {
+        public string TargetUsername { get; set; }
     }
 }

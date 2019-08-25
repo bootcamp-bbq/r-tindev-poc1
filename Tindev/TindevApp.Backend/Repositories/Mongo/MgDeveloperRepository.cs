@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TindevApp.Backend.Models;
+using TindevApp.Backend.Services;
 
 namespace TindevApp.Backend.Repositories.Mongo
 {
@@ -38,6 +39,36 @@ namespace TindevApp.Backend.Repositories.Mongo
             return developer;
         }
 
+        public async Task<Developer> CreateOrUpdate(Developer developer, CancellationToken cancellationToken = default)
+        {
+            var collection = GetDatabase(_mongoDbOptions).GetDeveloperCollection();
+
+            var updateDefinition = Builders<Developer>.Update
+                .Set(x => x.GithubUri, developer.GithubUri);
+
+            if (!string.IsNullOrEmpty(developer.Avatar))
+                updateDefinition.Set(x => x.Avatar, developer.Avatar);
+
+            if (!string.IsNullOrEmpty(developer.Bio))
+                updateDefinition.Set(x => x.Bio, developer.Bio);
+
+            if (!string.IsNullOrEmpty(developer.Name))
+                updateDefinition.Set(x => x.Name, developer.Name);
+
+            if (!string.IsNullOrEmpty(developer.Username))
+                updateDefinition.Set(x => x.Username, developer.Username);
+
+            var filterDefinition = Builders<Developer>.Filter.Eq(x => x.Username, developer.Username);
+
+            var options = new FindOneAndUpdateOptions<Developer, Developer>() { IsUpsert = true, ReturnDocument = ReturnDocument.After };
+
+            var result = await collection.FindOneAndUpdateAsync(filterDefinition, updateDefinition, options, cancellationToken);
+
+            developer.Id = result.Id;
+
+            return developer;
+        }
+
         public Task<Developer> GetById(string id, CancellationToken cancellationToken = default)
         {
             var collection = GetDatabase(_mongoDbOptions).GetDeveloperCollection();
@@ -58,6 +89,13 @@ namespace TindevApp.Backend.Repositories.Mongo
 
             return await collection.AsQueryable().ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
+        }
+
+        public async Task<IReadOnlyList<Developer>> ListAllExcept(string username, CancellationToken cancellationToken = default)
+        {
+            var collection = GetDatabase(_mongoDbOptions).GetDeveloperCollection();
+
+            return await collection.Find(x => x.Username != username).ToListAsync(cancellationToken);
         }
 
         public async Task<Developer> Update(Developer developer, CancellationToken cancellationToken = default)

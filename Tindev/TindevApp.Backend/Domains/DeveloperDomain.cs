@@ -26,17 +26,29 @@ namespace TindevApp.Backend.Domains
 
         public async Task<Developer> GetDeveloper(string username, CancellationToken cancellationToken = default)
         {
-            var dbDeveloper = await _developerRepository.GetByUsername(username, cancellationToken);
-            if (dbDeveloper != null)
-                return dbDeveloper;
-
             var gitDeveloper = await _githubService.GetDeveloper(username, cancellationToken);
             if (gitDeveloper == null)
                 return null;
 
-            dbDeveloper = await _developerRepository.Create(gitDeveloper, cancellationToken);
+            var dbDeveloper = await _developerRepository.CreateOrUpdate(gitDeveloper, cancellationToken);
 
             return dbDeveloper;
+        }
+
+        public async Task<IEnumerable<Developer>> GetDeveloperFrieds(string username, CancellationToken cancellationToken = default)
+        {
+            var gitFriedsColl = await _githubService.GetFollowers(username, cancellationToken);
+            if (gitFriedsColl == null)
+                return null;
+
+            List<Developer> friendsColl = new List<Developer>();
+            foreach (var item in gitFriedsColl)
+            {
+                var dbDeveloper = await _developerRepository.CreateOrUpdate(item, cancellationToken);
+                friendsColl.Add(dbDeveloper);
+            }
+
+            return friendsColl; ;
         }
     }
 }

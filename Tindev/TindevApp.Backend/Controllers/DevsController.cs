@@ -1,38 +1,43 @@
-using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using TindevApp.Backend.Queries;
-using TindevApp.Backend.Repositories;
 
 namespace TindevApp.Backend.Controllers
 {
+    [Authorize]
+    [Route("[controller]")]
     public class DevsController : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public DevsController(IMediator mediator)
+        [HttpGet]
+        public async Task<IActionResult> Index(CancellationToken cancellationToken = default)
         {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        }
+            var rq = this.RequestFrom<ListDevelopersQueryRequest>();
 
-        public async Task<IActionResult> Index([FromServices] IDeveloperRepository repo)
-        {
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            var devs = await repo.ListAll(tokenSource.Token);
-            return Ok(devs);
+            return await this.Mediator(rq, cancellationToken);
         }
 
         [HttpGet]
-        public Task<IActionResult> List([FromQuery] string username, CancellationToken cancellationToken = default)
+        [Route("{username}/friends")]
+        public async Task<IActionResult> Friends([FromRoute] string username, CancellationToken cancellationToken = default)
         {
-            var request = new ListDevelopersQueryRequest
-            {
-                Username = username
-            };
+            var rq = this.RequestFrom<ListDeveloperFriendsQueryRequest>();
 
-            return this.Mediator(request, cancellationToken);
+            rq.TargetUsername = username;
+
+            return await this.Mediator(rq, cancellationToken);
+        }
+
+        [HttpGet]
+        [Route("friends")]
+        public async Task<IActionResult> Friends(CancellationToken cancellationToken = default)
+        {
+            var rq = this.RequestFrom<ListDeveloperFriendsQueryRequest>();
+
+            rq.TargetUsername = rq.Principal.UserName();
+
+            return await this.Mediator(rq, cancellationToken);
         }
 
         [HttpPost]

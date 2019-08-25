@@ -12,9 +12,10 @@ using System.Reflection;
 using System.Text;
 using TindevApp.Backend.Domains;
 using TindevApp.Backend.Models;
-using TindevApp.Backend.Repositories;
 using TindevApp.Backend.Repositories.Mongo;
 using TindevApp.Backend.Services;
+using TindevApp.Backend.Services.Authentication;
+using TindevApp.Backend.Services.Http;
 
 namespace TindevApp.Backend
 {
@@ -65,8 +66,17 @@ namespace TindevApp.Backend
 
             BsonClassMap.RegisterClassMap<Developer>(cm =>
             {
-                cm.AutoMap();
-                cm.MapIdProperty(x => x.Id).SetIdGenerator(StringObjectIdGenerator.Instance);
+                cm.MapProperty(x => x.Avatar).SetIgnoreIfNull(true);
+                cm.MapProperty(x => x.Bio);
+                cm.MapProperty(x => x.Deslikes);
+                cm.MapProperty(x => x.GithubUri);
+                cm.MapProperty(x => x.Likes);
+                cm.MapProperty(x => x.Name);
+                cm.MapProperty(x => x.Username);
+
+                //cm.MapIdProperty(x => x.Id).SetIdGenerator(StringObjectIdGenerator.Instance);
+
+                cm.MapIdProperty(x => x.Id).SetSerializer(IdBsonSerializer.Instance).SetIdGenerator(ObjectIdGenerator.Instance);
             });
 
 

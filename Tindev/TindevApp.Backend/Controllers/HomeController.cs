@@ -17,11 +17,5 @@ namespace TindevApp.Backend.Controllers
         {
             return Ok("Hello");
         }
-
-        [HttpPost]
-        public Task<IActionResult> Login([FromBody] CreateUserCmdRequest request, [FromServices] IMediator mediatorService, CancellationToken cancellationToken = default)
-        {
-            return this.Mediator(request, mediatorService, cancellationToken);
-        }
     }
 }

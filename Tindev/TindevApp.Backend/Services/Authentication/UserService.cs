@@ -13,7 +13,7 @@ using TindevApp.Backend.Domains;
 using TindevApp.Backend.Models;
 using TindevApp.Backend.Repositories;
 
-namespace TindevApp.Backend.Services
+namespace TindevApp.Backend.Services.Authentication
 {
     public class UserService : IUserService
     {

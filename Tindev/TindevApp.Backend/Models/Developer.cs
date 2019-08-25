@@ -20,10 +20,6 @@ namespace TindevApp.Backend.Models
 
         public string GithubUri { get; set; }
 
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime ModifiedAt { get; set; }
-
         public string[] Likes { get; set; }
 
         public string[] Deslikes { get; set; }

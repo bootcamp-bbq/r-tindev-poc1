@@ -13,10 +13,11 @@ using TindevApp.Backend.Services;
 namespace TindevApp.Backend.Controllers
 {
     [Authorize]
+    [Route("[controller]")]
     public class UsersController : ControllerBase
     {
         [AllowAnonymous]
-        [HttpPost()]
+        [HttpPost("authenticate")]
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> Authenticate([FromForm]User userParam, [FromServices] IUserService userService, CancellationToken cancellationToken = default)
         {
