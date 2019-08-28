@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -16,5 +16,9 @@
     <Folder Include="wwwroot\src\pages\" />
     <Folder Include="wwwroot\src\services\" />
   </ItemGroup>
+  
+<ItemGroup>
+  <Content Remove="wwwroot\node_modules\**\*" />
+</ItemGroup>
 
 </Project>
