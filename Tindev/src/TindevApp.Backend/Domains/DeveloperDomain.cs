@@ -84,7 +84,7 @@ namespace TindevApp.Backend.Domains
                 friendsColl.Add(dbDeveloper);
             }
 
-            return friendsColl; ;
+            return await _developerRepository.ListAllExceptInLikeAndDeslike(username, cancellationToken);
         }
     }
 }
