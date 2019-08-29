@@ -3,12 +3,14 @@ import io from 'socket.io-client';
 import { Link } from 'react-router-dom';
 import './Main.css';
 
-import api from '../services/api';
+import api, { headerFactory } from '../services/api';
 
 import logo from '../assets/logo.svg';
 import dislike from '../assets/dislike.svg';
 import like from '../assets/like.svg';
 import itsamatch from '../assets/itsamatch.png';
+
+import tokenApi from '../services/tokenApi';
 
 export default function Main({ match }) {
   const [users, setUsers] = useState([]);
@@ -16,11 +18,8 @@ export default function Main({ match }) {
 
   useEffect(() => {
     async function loadUsers() {
-      const response = await api.get(`/devs/list?username=${match.params.id}`, {
-        headers: {
-          user: match.params.id,
-        }
-      })
+      const headers = headerFactory(tokenApi.load());
+      const response = await api.get(`/devs`, headers);
 
       setUsers(response.data.items);
     }
@@ -38,12 +37,10 @@ export default function Main({ match }) {
   //   })
   // }, [match.params.id]);
 
-  async function handleLike(id) {
-    await api.post(`/devs/${id}/likes`, null, {
-      headers: { user: match.params.id },
-    })
+  async function handleLike(username, id) {
+    await api.post(`/devs/${username}/like/add`, {}, headerFactory(tokenApi.load()));
 
-    setUsers(users.filter(user => user._id !== id));
+    setUsers(users.filter(user => user.id !== id));
   }
 
   async function handleDislike(id) {
@@ -63,10 +60,12 @@ export default function Main({ match }) {
       { users.length > 0 ? (
         <ul>  
           {users.map(user => (
-            <li key={user._id}>
+            <li key={user.id}>
               <img src={user.avatar} alt={user.name} />
               <footer>
-                <strong>{user.name}</strong> <span>{user.user}</span>
+                <a href={user.githubUri} target="_blank">
+                  <strong>{user.name}</strong> <span>{user.user}</span>
+                </a>
                 <p>{user.bio}</p>
               </footer>
 
@@ -74,7 +73,7 @@ export default function Main({ match }) {
                 <button type="button" onClick={() => handleDislike(user._id)}>
                   <img src={dislike} alt="Dislike" />
                 </button>
-                <button type="button" onClick={() => handleLike(user._id)}>
+                <button type="button" onClick={() => handleLike(user.name, user.id)}>
                   <img src={like} alt="Like" />
                 </button>
               </div>
