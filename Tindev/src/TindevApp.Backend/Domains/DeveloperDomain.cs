@@ -71,14 +71,14 @@ namespace TindevApp.Backend.Domains
             return dbDeveloper;
         }
 
-        internal async Task<IEnumerable<Developer>> GetDeveloperFrieds(string username, CancellationToken cancellationToken = default)
+        internal async Task<IEnumerable<Developer>> GetDeveloperFriends(string username, CancellationToken cancellationToken = default)
         {
-            var gitFriedsColl = await _githubService.GetFollowers(username, cancellationToken);
-            if (gitFriedsColl == null)
+            var gitFriendsColl = await _githubService.GetFollowers(username, cancellationToken);
+            if (gitFriendsColl == null)
                 return null;
 
             List<Developer> friendsColl = new List<Developer>();
-            foreach (var item in gitFriedsColl)
+            foreach (var item in gitFriendsColl)
             {
                 var dbDeveloper = await _developerRepository.CreateOrUpdate(item, cancellationToken);
                 friendsColl.Add(dbDeveloper);

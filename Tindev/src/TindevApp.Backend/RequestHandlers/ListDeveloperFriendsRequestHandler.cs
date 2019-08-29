@@ -18,7 +18,7 @@ namespace TindevApp.Backend.RequestHandlers
 
         public async Task<ListDeveloperFriendsQueryResponse> Handle(ListDeveloperFriendsQueryRequest request, CancellationToken cancellationToken)
         {
-            var friendsColl = await _developerDomain.GetDeveloperFrieds(request.TargetUsername, cancellationToken);
+            var friendsColl = await _developerDomain.GetDeveloperFriends(request.TargetUsername, cancellationToken);
 
             return new ListDeveloperFriendsQueryResponse
             {

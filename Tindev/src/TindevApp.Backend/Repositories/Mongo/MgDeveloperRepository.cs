@@ -44,19 +44,11 @@ namespace TindevApp.Backend.Repositories.Mongo
             var collection = GetDatabase(_mongoDbOptions).GetDeveloperCollection();
 
             var updateDefinition = Builders<Developer>.Update
-                .Set(x => x.GithubUri, developer.GithubUri);
-
-            if (!string.IsNullOrEmpty(developer.Avatar))
-                updateDefinition.Set(x => x.Avatar, developer.Avatar);
-
-            if (!string.IsNullOrEmpty(developer.Bio))
-                updateDefinition.Set(x => x.Bio, developer.Bio);
-
-            if (!string.IsNullOrEmpty(developer.Name))
-                updateDefinition.Set(x => x.Name, developer.Name);
-
-            if (!string.IsNullOrEmpty(developer.Username))
-                updateDefinition.Set(x => x.Username, developer.Username);
+                .Set(x => x.GithubUri, developer.GithubUri)
+                .Set(x => x.Avatar, developer.Avatar)
+                .Set(x => x.Bio, developer.Bio)
+                .Set(x => x.Name, developer.Name)
+                .Set(x => x.Username, developer.Username);
 
             var filterDefinition = Builders<Developer>.Filter.Eq(x => x.Username, developer.Username);
 

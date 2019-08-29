@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\public\" />
+    <Folder Include="wwwroot\src\assets\" />
+    <Folder Include="wwwroot\src\pages\" />
+    <Folder Include="wwwroot\src\services\" />
+  </ItemGroup>
+  
+<ItemGroup>
+  <Content Remove="wwwroot\node_modules\**\*" />
+</ItemGroup>
+
+</Project>
