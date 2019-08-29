@@ -47,9 +47,10 @@ namespace TindevApp.Backend.Controllers
         }
 
         [HttpPost("{username}/deslike/add")]
-        public IActionResult Deslike()
+        public async Task<IActionResult> Deslike([FromBody] AddDeslikeCmdRequest request, [FromRoute]string username, CancellationToken cancellationToken = default)
         {
-            return Ok();
+            request.TargetUsername = username;
+            return await this.Mediator(request, cancellationToken);
         }
     }
 }

@@ -1,3 +1,0 @@
-﻿# TindevApp.WebFrontend
-
-
