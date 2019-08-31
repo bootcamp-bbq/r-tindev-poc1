@@ -67,14 +67,29 @@ namespace TindevApp.Backend.Domains
             if (gitDeveloper == null)
                 return null;
 
-            BackgroundJob.Enqueue<DeveloperDomain>(x => x.GetDeveloperFriends(username, CancellationToken.None));
+            BackgroundJob.Enqueue<DeveloperDomain>(x => x.UpdateDeveloperFollowers(username, CancellationToken.None));
 
             var dbDeveloper = await _developerRepository.CreateOrUpdate(gitDeveloper, cancellationToken);
 
             return dbDeveloper;
         }
 
-        public async Task<IEnumerable<Developer>> GetDeveloperFriends(string username, CancellationToken cancellationToken = default)
+        public async Task UpdateDeveloperFollowers(string username, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var devFriends = await GetDeveloperFriends(username, cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            List<Task> taskDev = new List<Task>();
+            foreach (var dev in devFriends)
+            {
+                BackgroundJob.Enqueue<DeveloperDomain>(x => x.GetDeveloper(dev.Username, CancellationToken.None));
+            }
+        }
+
+        internal async Task<IEnumerable<Developer>> GetDeveloperFriends(string username, CancellationToken cancellationToken = default)
         {
             var gitFriendsColl = await _githubService.GetFollowers(username, cancellationToken);
             if (gitFriendsColl == null)
@@ -91,3 +106,4 @@ namespace TindevApp.Backend.Domains
         }
     }
 }
+
