@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Hangfire;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +47,7 @@ namespace TindevApp.Backend.Domains
 
         internal async Task AddDeslike(string currentUserId, string targetUserId, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Adding deslike to {TargetUserId} from {CurrentUserId}", targetUserId, currentUserId);
+            _logger.LogInformation("Adding dislike to {TargetUserId} from {CurrentUserId}", targetUserId, currentUserId);
 
             var targetUserDb = await _developerRepository.GetById(targetUserId, cancellationToken);
 
@@ -66,12 +67,14 @@ namespace TindevApp.Backend.Domains
             if (gitDeveloper == null)
                 return null;
 
+            BackgroundJob.Enqueue<DeveloperDomain>(x => x.GetDeveloperFriends(username, CancellationToken.None));
+
             var dbDeveloper = await _developerRepository.CreateOrUpdate(gitDeveloper, cancellationToken);
 
             return dbDeveloper;
         }
 
-        internal async Task<IEnumerable<Developer>> GetDeveloperFriends(string username, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Developer>> GetDeveloperFriends(string username, CancellationToken cancellationToken = default)
         {
             var gitFriendsColl = await _githubService.GetFollowers(username, cancellationToken);
             if (gitFriendsColl == null)

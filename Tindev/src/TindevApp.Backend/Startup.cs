@@ -1,9 +1,12 @@
-﻿using MediatR;
+﻿using Hangfire;
+using Hangfire.Mongo;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
@@ -104,6 +107,23 @@ namespace TindevApp.Backend
                     ValidateAudience = false
                 };
             });
+
+
+            var mongoOptions = services.BuildServiceProvider().GetService<IOptions<MongoDbOptions>>();
+            // Add framework services.
+            services.AddHangfire(config =>
+            {
+                var migrationOptions = new MongoMigrationOptions
+                {
+                    Strategy = MongoMigrationStrategy.Drop,
+                    BackupStrategy = MongoBackupStrategy.None
+                };
+                var opts = new MongoStorageOptions { Prefix = "hf_", CheckConnection = false, MigrationOptions = migrationOptions };
+                config.UseMongoStorage(mongoOptions.Value.ConnectionString, mongoOptions.Value.Database, opts);
+            });
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -120,6 +140,9 @@ namespace TindevApp.Backend
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
 
             app.UseAuthentication();
 
