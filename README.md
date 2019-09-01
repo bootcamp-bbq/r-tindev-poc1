@@ -7,27 +7,27 @@ referals to publish to heroku docker see the article
 
 ## Setup your appsettings.json
 
-  "GithubApi": {
+    "GithubApi": {
     "Uri": "https://api.github.com",
-    "UserAgent": "bootcamp-bbq",
-    "Token": ""
-  },
-  "ConnectionStrings": {
-    "Mongo": ""
-  },
-  "MongoDb": {
-    "Database": ""
-  },
-  "AppSettings": {
-    "Secret": ""
-  },
-  "HealthChecksUI": {
-    "HealthChecks": [
-      {
-        "Name": "HTTP-Api-Basic",
-        "Uri": "http://localhost:9000/healthz"
-      }
-    ],
-    "EvaluationTimeOnSeconds": 10,
-    "MinimumSecondsBetweenFailureNotifications": 60
-  }
+      "UserAgent": "bootcamp-bbq",
+      "Token": ""
+    },
+    "ConnectionStrings": {
+      "Mongo": ""
+    },
+    "MongoDb": {
+      "Database": ""
+    },
+    "AppSettings": {
+      "Secret": ""
+    },
+    "HealthChecksUI": {
+      "HealthChecks": [
+        {
+          "Name": "HTTP-Api-Basic",
+          "Uri": "http://localhost:9000/healthz"
+        }
+      ],
+      "EvaluationTimeOnSeconds": 10,
+      "MinimumSecondsBetweenFailureNotifications": 60
+    }
