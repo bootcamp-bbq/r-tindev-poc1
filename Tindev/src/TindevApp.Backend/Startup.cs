@@ -1,4 +1,6 @@
-﻿using HealthChecks.UI.Client;
+using HealthChecks.UI.Client;
+using Hangfire;
+using Hangfire.Mongo;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -112,8 +114,7 @@ namespace TindevApp.Backend
                     ValidateAudience = false
                 };
             });
-
-
+          
             using (var scoped = services.BuildServiceProvider(false).CreateScope())
             {
                 var mongoOpts = scoped.ServiceProvider.GetService<IOptions<MongoDbOptions>>().Value;
@@ -130,6 +131,21 @@ namespace TindevApp.Backend
             }
 
             services.AddHealthChecksUI();
+            var mongoOptions = services.BuildServiceProvider().GetService<IOptions<MongoDbOptions>>();
+            // Add framework services.
+            services.AddHangfire(config =>
+            {
+                var migrationOptions = new MongoMigrationOptions
+                {
+                    Strategy = MongoMigrationStrategy.Drop,
+                    BackupStrategy = MongoBackupStrategy.None
+                };
+                var opts = new MongoStorageOptions { Prefix = "hf_", CheckConnection = false, MigrationOptions = migrationOptions };
+                config.UseMongoStorage(mongoOptions.Value.ConnectionString, mongoOptions.Value.Database, opts);
+            });
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -156,6 +172,9 @@ namespace TindevApp.Backend
             });
 
             app.UseHealthChecksUI();
+
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
 
             app.UseAuthentication();
 
