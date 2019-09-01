@@ -114,35 +114,36 @@ namespace TindevApp.Backend
                     ValidateAudience = false
                 };
             });
-          
+
             using (var scoped = services.BuildServiceProvider(false).CreateScope())
             {
                 var mongoOpts = scoped.ServiceProvider.GetService<IOptions<MongoDbOptions>>().Value;
 
                 services.AddHealthChecks()
-
-                    .AddUrlGroup(uriOpts =>
+                    .AddGithub(uriOpts =>
                     {
-                        uriOpts.AddUri(new Uri(Configuration["GithubApi:Uri"]));
-                        uriOpts.UseHttpMethod(System.Net.Http.HttpMethod.Head);
+                        uriOpts.Uri = new Uri(Configuration["GithubApi:Uri"]);
+                        uriOpts.Token = Configuration["GithubApi:Token"];
+                        uriOpts.UserAgent = Configuration["GithubApi:UserAgent"];
                     }, "GithubApi", HealthStatus.Degraded)
 
                     .AddMongoDb(mongoOpts.ConnectionString, "mongo", HealthStatus.Unhealthy);
+
+
+                // Add framework services.
+                services.AddHangfire(config =>
+                {
+                    var migrationOptions = new MongoMigrationOptions
+                    {
+                        Strategy = MongoMigrationStrategy.Drop,
+                        BackupStrategy = MongoBackupStrategy.None
+                    };
+                    var opts = new MongoStorageOptions { Prefix = "hf_", CheckConnection = false, MigrationOptions = migrationOptions };
+                    config.UseMongoStorage(mongoOpts.ConnectionString, mongoOpts.Database, opts);
+                });
             }
 
             services.AddHealthChecksUI();
-            var mongoOptions = services.BuildServiceProvider().GetService<IOptions<MongoDbOptions>>();
-            // Add framework services.
-            services.AddHangfire(config =>
-            {
-                var migrationOptions = new MongoMigrationOptions
-                {
-                    Strategy = MongoMigrationStrategy.Drop,
-                    BackupStrategy = MongoBackupStrategy.None
-                };
-                var opts = new MongoStorageOptions { Prefix = "hf_", CheckConnection = false, MigrationOptions = migrationOptions };
-                config.UseMongoStorage(mongoOptions.Value.ConnectionString, mongoOptions.Value.Database, opts);
-            });
 
             // Add the processing server as IHostedService
             services.AddHangfireServer();
@@ -171,7 +172,7 @@ namespace TindevApp.Backend
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
 
-            app.UseHealthChecksUI();
+            app.UseHealthChecksUI(opts => opts.UIPath = "/health-checks-ui");
 
             app.UseHangfireServer();
             app.UseHangfireDashboard();
