@@ -1,13 +1,20 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
+using Newtonsoft.Json;
 using System;
+using System.Linq;
+using System.Net.Mime;
 using System.Reflection;
 using System.Text;
 using TindevApp.Backend.Domains;
@@ -104,11 +111,27 @@ namespace TindevApp.Backend
                     ValidateAudience = false
                 };
             });
+
+
+            using (var scoped = services.BuildServiceProvider(false).CreateScope())
+            {
+                var opts = scoped.ServiceProvider.GetService<IOptions<MongoDbOptions>>();
+                services.AddHealthChecks()
+                    .AddUrlGroup(new Uri("https://api.github.com"), "Github API", HealthStatus.Degraded)
+                    .AddMongoDb(mongodbConnectionString: opts.Value.ConnectionString,
+                    name: "mongo",
+                    failureStatus: HealthStatus.Unhealthy);
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
             app.UseCors(c =>
             {
                 c.AllowAnyHeader();
@@ -116,10 +139,22 @@ namespace TindevApp.Backend
                 c.AllowAnyOrigin();
             });
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseHealthChecks("/healthcheck");
+            app.UseHealthChecks("/hc",
+               new HealthCheckOptions
+               {
+                   ResponseWriter = async (context, report) =>
+                   {
+                       var result = JsonConvert.SerializeObject(
+                           new
+                           {
+                               status = report.Status.ToString(),
+                               errors = report.Entries.Select(e => new { key = e.Key, value = Enum.GetName(typeof(HealthStatus), e.Value.Status) })
+                           });
+                       context.Response.ContentType = MediaTypeNames.Application.Json;
+                       await context.Response.WriteAsync(result);
+                   }
+               });
 
             app.UseAuthentication();
 
