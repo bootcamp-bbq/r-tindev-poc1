@@ -32,7 +32,8 @@ namespace TindevApp.Backend.Services.Authentication
 
         public async Task<User> Authenticate(string username, CancellationToken cancellationToken = default)
         {
-            var developer = await _developerDomain.GetDeveloper(username, cancellationToken);
+            var developer = await _developerDomain.CreateOrUpdateDeveloper(username, cancellationToken)
+                .ConfigureAwait(false);
 
             if (developer == null)
             {
@@ -40,9 +41,12 @@ namespace TindevApp.Backend.Services.Authentication
                 return null;
             }
 
+            await _developerDomain.UpdateDeveloperFollowers(developer.Username, cancellationToken)
+                .ConfigureAwait(false);
+
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var key = Encoding.ASCII.GetBytes(_jwtUserOptions.Secret);
+            var key = _jwtUserOptions.ByteSecret;
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

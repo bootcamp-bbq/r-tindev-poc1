@@ -1,12 +1,11 @@
-using HealthChecks.UI.Client;
 using Hangfire;
 using Hangfire.Mongo;
+using HealthChecks.UI.Client;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -14,10 +13,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
-using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
-using System.Linq;
-using System.Net.Mime;
 using System.Reflection;
 using System.Text;
 using TindevApp.Backend.Domains;
@@ -57,6 +54,7 @@ namespace TindevApp.Backend
             {
                 c.BaseAddress = new Uri(Configuration["GithubApi:Uri"]);
                 c.DefaultRequestHeaders.Add("User-Agent", Configuration["GithubApi:UserAgent"]);
+                c.DefaultRequestHeaders.Add("Authorization", $"token {Configuration["GithubApi:Token"]}");
             });
 
             services.AddScoped<DeveloperDomain>();
@@ -66,14 +64,17 @@ namespace TindevApp.Backend
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IDeveloperRepository, MgDeveloperRepository>();
 
+            //adding mediatR dependencies
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+
+            //configuring options for MongoDb
             services.Configure<MongoDbOptions>(opts =>
             {
                 opts.ConnectionString = Configuration.GetConnectionString("Mongo");
                 opts.Database = Configuration["MongoDb:Database"];
             });
 
-            services.AddMediatR(Assembly.GetExecutingAssembly());
-
+            //adding MongoDb mapping
             BsonClassMap.RegisterClassMap<Developer>(cm =>
             {
                 cm.MapProperty(x => x.Avatar).SetIgnoreIfNull(true);
@@ -83,8 +84,6 @@ namespace TindevApp.Backend
                 cm.MapProperty(x => x.Likes);
                 cm.MapProperty(x => x.Name);
                 cm.MapProperty(x => x.Username);
-
-                //cm.MapIdProperty(x => x.Id).SetIdGenerator(StringObjectIdGenerator.Instance);
 
                 cm.MapIdProperty(x => x.Id).SetSerializer(IdBsonSerializer.Instance).SetIdGenerator(ObjectIdGenerator.Instance);
             });
@@ -147,6 +146,11 @@ namespace TindevApp.Backend
 
             // Add the processing server as IHostedService
             services.AddHangfireServer();
+
+            services.AddSwaggerGen(opts =>
+            {
+                opts.SwaggerDoc("v1", new Info() { Title = "Tindev App", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -164,14 +168,24 @@ namespace TindevApp.Backend
                 c.AllowAnyOrigin();
             });
 
-            app.UseHealthChecks("/health-checks");
+            app.UseStaticFiles();
 
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "TinDev");
+            });
+
+            app.UseHealthChecks("/health-checks");
             app.UseHealthChecks("/healthz", new HealthCheckOptions()
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
-
             app.UseHealthChecksUI(opts => opts.UIPath = "/health-checks-ui");
 
             app.UseHangfireServer();

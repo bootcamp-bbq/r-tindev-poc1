@@ -63,11 +63,16 @@ namespace TindevApp.Backend.Domains
 
         internal async Task<Developer> GetDeveloper(string username, CancellationToken cancellationToken = default)
         {
+            var dbDeveloper = await _developerRepository.GetByUsername(username, cancellationToken);
+
+            return dbDeveloper;
+        }
+
+        internal async Task<Developer> CreateOrUpdateDeveloper(string username, CancellationToken cancellationToken = default)
+        {
             var gitDeveloper = await _githubService.GetDeveloper(username, cancellationToken);
             if (gitDeveloper == null)
                 return null;
-
-            BackgroundJob.Enqueue<DeveloperDomain>(x => x.UpdateDeveloperFollowers(username, CancellationToken.None));
 
             var dbDeveloper = await _developerRepository.CreateOrUpdate(gitDeveloper, cancellationToken);
 
