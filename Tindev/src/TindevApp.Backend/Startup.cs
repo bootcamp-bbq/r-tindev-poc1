@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using HealthChecks.UI.Client;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -115,13 +116,20 @@ namespace TindevApp.Backend
 
             using (var scoped = services.BuildServiceProvider(false).CreateScope())
             {
-                var opts = scoped.ServiceProvider.GetService<IOptions<MongoDbOptions>>();
+                var mongoOpts = scoped.ServiceProvider.GetService<IOptions<MongoDbOptions>>().Value;
+
                 services.AddHealthChecks()
-                    .AddUrlGroup(new Uri("https://api.github.com"), "Github API", HealthStatus.Degraded)
-                    .AddMongoDb(mongodbConnectionString: opts.Value.ConnectionString,
-                    name: "mongo",
-                    failureStatus: HealthStatus.Unhealthy);
+
+                    .AddUrlGroup(uriOpts =>
+                    {
+                        uriOpts.AddUri(new Uri(Configuration["GithubApi:Uri"]));
+                        uriOpts.UseHttpMethod(System.Net.Http.HttpMethod.Head);
+                    }, "GithubApi", HealthStatus.Degraded)
+
+                    .AddMongoDb(mongoOpts.ConnectionString, "mongo", HealthStatus.Unhealthy);
             }
+
+            services.AddHealthChecksUI();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -140,21 +148,14 @@ namespace TindevApp.Backend
             });
 
             app.UseHealthChecks("/health-checks");
-            app.UseHealthChecks("/hc",
-               new HealthCheckOptions
-               {
-                   ResponseWriter = async (context, report) =>
-                   {
-                       var result = JsonConvert.SerializeObject(
-                           new
-                           {
-                               status = report.Status.ToString(),
-                               errors = report.Entries.Select(e => new { key = e.Key, value = Enum.GetName(typeof(HealthStatus), e.Value.Status) })
-                           });
-                       context.Response.ContentType = MediaTypeNames.Application.Json;
-                       await context.Response.WriteAsync(result);
-                   }
-               });
+
+            app.UseHealthChecks("/healthz", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+
+            app.UseHealthChecksUI();
 
             app.UseAuthentication();
 
