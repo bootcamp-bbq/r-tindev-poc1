@@ -139,7 +139,7 @@ namespace TindevApp.Backend
                 c.AllowAnyOrigin();
             });
 
-            app.UseHealthChecks("/healthcheck");
+            app.UseHealthChecks("/health-checks");
             app.UseHealthChecks("/hc",
                new HealthCheckOptions
                {
