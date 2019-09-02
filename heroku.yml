@@ -1,0 +1,3 @@
+﻿build:
+  docker:
+    web: Tindev/src/TindevApp.Backend/Dockerfile.heroku

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.779
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{54388014-F532-4C70-97EF-03D315570754}"
 	ProjectSection(SolutionItems) = preProject
@@ -32,6 +32,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TindevApp.Backend", "src\Ti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TindevApp.FrontendSPA", "src\TindevApp.FrontendSPA\TindevApp.FrontendSPA.csproj", "{28392A38-B8D9-46E4-ADB3-891E84283963}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Heroku", "Heroku", "{7DC4168C-62C0-41EB-B08A-16FA8FD4CE5C}"
+	ProjectSection(SolutionItems) = preProject
+		..\heroku.yml = ..\heroku.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +62,7 @@ Global
 		{41766B0F-30A0-40F4-AA87-A27E81215A3E} = {0C41ADFF-B7A8-4C39-81F8-680098182D24}
 		{8CEB8570-9BEA-43BF-8DB7-1106E8593CF4} = {003BD6D2-5B77-4291-AB69-DAB7C2594F82}
 		{28392A38-B8D9-46E4-ADB3-891E84283963} = {003BD6D2-5B77-4291-AB69-DAB7C2594F82}
+		{7DC4168C-62C0-41EB-B08A-16FA8FD4CE5C} = {54388014-F532-4C70-97EF-03D315570754}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B805B57-1328-4BF8-9664-40E49D4913CB}

@@ -53,8 +53,12 @@ namespace TindevApp.Backend
             services.AddHttpClient<HttpGithubService>(c =>
             {
                 c.BaseAddress = new Uri(Configuration["GithubApi:Uri"]);
-                c.DefaultRequestHeaders.Add("User-Agent", Configuration["GithubApi:UserAgent"]);
-                c.DefaultRequestHeaders.Add("Authorization", $"token {Configuration["GithubApi:Token"]}");
+
+                if (!string.IsNullOrEmpty(Configuration["GithubApi:UserAgent"]))
+                    c.DefaultRequestHeaders.Add("User-Agent", Configuration["GithubApi:UserAgent"]);
+
+                if (!string.IsNullOrEmpty(Configuration["GithubApi:Token"]))
+                    c.DefaultRequestHeaders.Add("Authorization", $"token {Configuration["GithubApi:Token"]}");
             });
 
             services.AddScoped<DeveloperDomain>();
@@ -149,7 +153,7 @@ namespace TindevApp.Backend
 
             services.AddSwaggerGen(opts =>
             {
-                opts.SwaggerDoc("v1", new Info() { Title = "Tindev App", Version = "v1" });
+                opts.SwaggerDoc("v1", new Info() { Title = "TinDev App", Version = "v1" });
             });
         }
 
