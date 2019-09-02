@@ -7,10 +7,10 @@ services:
       - "9001:9001"
     environment:
         ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-development}
-        ConnectionStrings__Mongo: ${ConnectionStrings__Mongo:-development}
-        MongoDb__Database: ${MongoDb__Database:-development}
-        AppSettings__Secret: ${AppSettings__Secret:-development}
-        GithubApi__Uri: ${GithubApi__Uri:-development}
-        GithubApi__UserAgent: ${GithubApi__UserAgent:-development}
-        GithubApi__Token: ${GithubApi__Token:-development}
-        ASPNETCORE_URLS: ${ASPNETCORE_URLS:-development}
+        ConnectionStrings__Mongo: ${ConnectionStrings__Mongo:-}
+        MongoDb__Database: ${MongoDb__Database:-tindev}
+        AppSettings__Secret: ${AppSettings__Secret:-jwt-rocks-jwt-rocks-jwt-rocks}
+        GithubApi__Uri: ${GithubApi__Uri:-https://api.github.com}
+        GithubApi__UserAgent: ${GithubApi__UserAgent:-bbq}
+        GithubApi__Token: ${GithubApi__Token:-}
+        ASPNETCORE_URLS: ${ASPNETCORE_URLS:-http://+:9000}
