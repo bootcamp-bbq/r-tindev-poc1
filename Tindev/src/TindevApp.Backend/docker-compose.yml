@@ -6,11 +6,11 @@ services:
     ports:
       - "9001:9001"
     environment:
-        ASPNETCORE_ENVIRONMENT: development
-        ConnectionStrings__Mongo: mongodb+srv://tindev:tindev@nops-dhfxf.azure.mongodb.net?retryWrites=true&w=majority
-        MongoDb__Database: tindev
-        AppSettings__Secret: jwt-rocks||jwt-rocks||jwt-rocks||jwt-rocks
-        GithubApi__Uri: https://api.github.com
-        GithubApi__UserAgent: bootcamp-bbq
-        GithubApi__Token: f09eb7e85a0830f46cefff49139362d26c6e6fb5
-        ASPNETCORE_URLS: http://+:9001
+        ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-development}
+        ConnectionStrings__Mongo: ${ConnectionStrings__Mongo:-development}
+        MongoDb__Database: ${MongoDb__Database:-development}
+        AppSettings__Secret: ${AppSettings__Secret:-development}
+        GithubApi__Uri: ${GithubApi__Uri:-development}
+        GithubApi__UserAgent: ${GithubApi__UserAgent:-development}
+        GithubApi__Token: ${GithubApi__Token:-development}
+        ASPNETCORE_URLS: ${ASPNETCORE_URLS:-development}
