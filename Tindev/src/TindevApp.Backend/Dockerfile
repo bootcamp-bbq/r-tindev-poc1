@@ -4,10 +4,9 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS build
 WORKDIR /src
-COPY ["src/TindevApp.Backend/TindevApp.Backend.csproj", "src/TindevApp.Backend/"]
-RUN dotnet restore "src/TindevApp.Backend/TindevApp.Backend.csproj"
 COPY . .
-WORKDIR "/src/src/TindevApp.Backend"
+WORKDIR "/src"
+RUN dotnet restore "TindevApp.Backend.csproj"
 RUN dotnet build "TindevApp.Backend.csproj" -c Release -o /app
 
 FROM build AS publish
