@@ -1,5 +1,6 @@
 ﻿using Hangfire;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,19 @@ namespace TindevApp.Backend.Domains
         private readonly ILogger<DeveloperDomain> _logger;
         private readonly IDeveloperRepository _developerRepository;
         private readonly IGithubService _githubService;
+        private readonly IFeatureManager _featureManager;
 
-        public DeveloperDomain(ILogger<DeveloperDomain> logger, IDeveloperRepository developerRepository, IGithubService githubService)
+        public DeveloperDomain(
+            ILogger<DeveloperDomain> logger,
+            IDeveloperRepository developerRepository,
+            IGithubService githubService,
+            IFeatureManager featureManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _developerRepository = developerRepository ?? throw new ArgumentNullException(nameof(developerRepository));
             _githubService = githubService ?? throw new ArgumentNullException(nameof(githubService));
+
+            _featureManager = featureManager ?? throw new ArgumentNullException(nameof(featureManager));
         }
 
         internal async Task<bool> AddLike(string currentUsername, string targetUsername, CancellationToken cancellationToken = default)
@@ -87,10 +95,13 @@ namespace TindevApp.Backend.Domains
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            List<Task> taskDev = new List<Task>();
-            foreach (var dev in devFriends)
+            if (_featureManager.IsEnabled("HangfireFriends"))
             {
-                BackgroundJob.Enqueue<DeveloperDomain>(x => x.GetDeveloper(dev.Username, CancellationToken.None));
+                List<Task> taskDev = new List<Task>();
+                foreach (var dev in devFriends)
+                {
+                    BackgroundJob.Enqueue<DeveloperDomain>(x => x.GetDeveloper(dev.Username, CancellationToken.None));
+                }
             }
         }
 
