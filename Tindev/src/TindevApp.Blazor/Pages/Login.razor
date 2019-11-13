@@ -1,0 +1,20 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStorage
+@inject Data.DevelopersApi devApi
+
+<input type="text" @bind="username" />
+
+<button @onclick="@LoginAsync">Login</button>
+
+@code 
+{
+    private string username;
+
+    private async Task LoginAsync()
+    {
+        string content = await devApi.LoginAsync(username);
+
+        await ProtectedSessionStorage.SetAsync("token", content);
+    }
+}

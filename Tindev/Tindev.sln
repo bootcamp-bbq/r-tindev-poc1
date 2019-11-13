@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Heroku", "Heroku", "{7DC416
 		..\heroku.yml = ..\heroku.yml
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TindevApp.Blazor", "src\TindevApp.Blazor\TindevApp.Blazor.csproj", "{AFA8175C-C504-48E4-81BB-A3CC06002416}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{28392A38-B8D9-46E4-ADB3-891E84283963}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28392A38-B8D9-46E4-ADB3-891E84283963}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28392A38-B8D9-46E4-ADB3-891E84283963}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFA8175C-C504-48E4-81BB-A3CC06002416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFA8175C-C504-48E4-81BB-A3CC06002416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFA8175C-C504-48E4-81BB-A3CC06002416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFA8175C-C504-48E4-81BB-A3CC06002416}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +69,7 @@ Global
 		{8CEB8570-9BEA-43BF-8DB7-1106E8593CF4} = {003BD6D2-5B77-4291-AB69-DAB7C2594F82}
 		{28392A38-B8D9-46E4-ADB3-891E84283963} = {003BD6D2-5B77-4291-AB69-DAB7C2594F82}
 		{7DC4168C-62C0-41EB-B08A-16FA8FD4CE5C} = {54388014-F532-4C70-97EF-03D315570754}
+		{AFA8175C-C504-48E4-81BB-A3CC06002416} = {003BD6D2-5B77-4291-AB69-DAB7C2594F82}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B805B57-1328-4BF8-9664-40E49D4913CB}
