@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Text;
 using TindevApp.Backend.Domains;
 using TindevApp.Backend.Infrastructure.Mvc;
+using TindevApp.Backend.Infrastructure.Swagger;
 using TindevApp.Backend.Models;
 using TindevApp.Backend.Repositories.Mongo;
 using TindevApp.Backend.Services;
@@ -155,6 +156,8 @@ namespace TindevApp.Backend
             services.AddSwaggerGen(opts =>
             {
                 opts.SwaggerDoc("v1", new Info() { Title = "TinDev App", Version = "v1" });
+
+                opts.OperationFilter<SwaggerRemoveCancellationTokenParameterFilter>();
             });
 
             services.AddFeatureManagement();
