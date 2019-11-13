@@ -7,14 +7,22 @@
 
 <button @onclick="@LoginAsync">Login</button>
 
-@code 
+<h3>Status: @messageStatus</h3>
+
+@code
 {
     private string username;
 
+    private string messageStatus = "";
+
     private async Task LoginAsync()
     {
+        messageStatus = "loading";
+
         string content = await devApi.LoginAsync(username);
 
         await ProtectedSessionStorage.SetAsync("token", content);
+
+        messageStatus = "done";
     }
 }

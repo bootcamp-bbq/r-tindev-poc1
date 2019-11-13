@@ -6,6 +6,8 @@
 
 <h3>Developers</h3>
 
+<h3>Status: @messageStatus</h3>
+
 <button @onclick="RefreshAsync">Refresh</button>
 
 <div class="row">
@@ -31,17 +33,30 @@
 
 @code
 {
+    private string messageStatus = "";
+
     private List<Developer> developers = new List<Developer>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await RefreshAsync();
+    }
 
     private async Task RefreshAsync()
     {
+        messageStatus = "loading";
+
         string token = await ProtectedSessionStorage.GetAsync<string>("token");
 
         var devsApi = await devApi.GetDevelopersAsync(token);
+
+        developers.Clear();
 
         foreach (var item in devsApi)
         {
             developers.Add(item);
         }
+
+        messageStatus = "";
     }
 }
