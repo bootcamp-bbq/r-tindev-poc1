@@ -1,7 +1,7 @@
 ﻿@page "/login"
-@using Microsoft.AspNetCore.ProtectedBrowserStorage
+
 @inject ProtectedSessionStorage ProtectedSessionStorage
-@inject Data.DevelopersApi devApi
+@inject DevelopersApi devApi
 
 <input type="text" @bind="username" />
 
